@@ -7,27 +7,28 @@
     <meta charset="UTF-8">
     <title>title</title>
     <script>
-        async function initMap() {
-            const contentString = `
-          <div>
-            <h1>Uluru</h1>
-            <div>
-              <p>
-                <b>Uluru</b>, also
-              </p>
-            </div>
-          </div>`;
-            const infoWindow = new google.maps.InfoWindow({
-                content: contentString,
-                ariaLabel: "Uluru",
-            });
-            const marker = document.querySelector('gmp-advanced-marker');
-            marker.addEventListener('gmp-click', () => {
-                infoWindow.open({ anchor: marker });
-            });
-        }
-        window.initMap = initMap;
-    </script>
+    	let map;
+    	let marker;    
+    	function initMap() {
+      		map = new google.maps.Map(document.getElementById("map"), {
+        		zoom: 8,
+        		center: { lat: -34.397, lng: 150.644 },
+        		mapTypeControl: false,
+      		});
+      		marker = new google.maps.Marker({
+        		map,
+      		});
+      		map.addListener("click", (e) => {
+        		marker.setMap(null);
+        	    marker = new google.maps.Marker({
+        	        position: e.latLng,
+        	        map: map,
+        	    });
+        	    console.log("Clicked coordinates:", e.latLng.lat(), e.latLng.lng());
+      		});
+    	}
+    	window.initMap = initMap;
+	</script>
     <style>
         html,
         body {
@@ -73,19 +74,16 @@
 		</form>
 	</div>
     <div id="map">
-        <gmp-map center="-25.363, 131.044" zoom="4" map-id="DEMO_MAP_ID">
-            <gmp-advanced-marker position="-25.363, 131.044" title="Uluru" gmp-clickable></gmp-advanced-marker>
-        </gmp-map>
     </div>
     <div id="send">
 		<form action="/map/send">
 			<input type="file" name="opendrive" accept=".xodr" >
 			<input type="text" name="coordinate" >  
 			<input type="text" name="situation" >
-			<input type="submit" value="Send" >  
+			<input type="submit" value="Send" >
 		</form>
 	</div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&libraries=marker&v=beta&solution_channel=GMP_CCS_infowindows_v2" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&v=weekly&solution_channel=GMP_CCS_geocodingservice_v2" defer></script>
 </body>
 
 </html>

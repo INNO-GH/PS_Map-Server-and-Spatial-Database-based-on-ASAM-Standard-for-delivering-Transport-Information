@@ -79,10 +79,10 @@
         </gmp-map>
     </div>
     <div id="receive">
-		<form action="/map/receive">
+		<form action="/map/receive" method="post" enctype="multipart/form-data">
 			<input type="text" name="coordinate" >  
 			<input type="text" name="situation" >  
-			<input type="submit" value="Opendrive" >
+			<input type="submit" value="Receive" >
 		</form>
 	</div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&v=weekly&solution_channel=GMP_CCS_geocodingservice_v2" defer></script>

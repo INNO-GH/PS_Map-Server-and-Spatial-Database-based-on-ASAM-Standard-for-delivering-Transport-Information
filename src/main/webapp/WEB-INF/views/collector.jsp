@@ -76,7 +76,7 @@
     <div id="map">
     </div>
     <div id="send">
-		<form action="/map/send">
+		<form action="/map/send" method="post" enctype="multipart/form-data">
 			<input type="file" name="opendrive" accept=".xodr" >
 			<input type="text" name="coordinate" >  
 			<input type="text" name="situation" >

@@ -7,26 +7,27 @@
     <meta charset="UTF-8">
     <title>title</title>
     <script>
-        async function initMap() {
-            const contentString = `
-          <div>
-            <h1>Uluru</h1>
-            <div>
-              <p>
-                <b>Uluru</b>, also
-              </p>
-            </div>
-          </div>`;
-            const infoWindow = new google.maps.InfoWindow({
-                content: contentString,
-                ariaLabel: "Uluru",
-            });
-            const marker = document.querySelector('gmp-advanced-marker');
-            marker.addEventListener('gmp-click', () => {
-                infoWindow.open({ anchor: marker });
-            });
-        }
-        window.initMap = initMap;
+    	let map;
+		let marker;    
+		function initMap() {
+  			map = new google.maps.Map(document.getElementById("map"), {
+    			zoom: 8,
+    			center: { lat: -34.397, lng: 150.644 },
+    			mapTypeControl: false,
+  			});
+  			marker = new google.maps.Marker({
+    			map,
+  			});
+  			map.addListener("click", (e) => {
+    			marker.setMap(null);
+    	    	marker = new google.maps.Marker({
+    	        	position: e.latLng,
+    	        	map: map,
+    	    	});
+    	    	document.getElementsByName("coordinate")[0].value = e.latLng.lat() + ", " + e.latLng.lng();
+  			});
+		}
+		window.initMap = initMap;
     </script>
     <style>
         html,
@@ -84,7 +85,7 @@
 			<input type="submit" value="Opendrive" >
 		</form>
 	</div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&libraries=marker&v=beta&solution_channel=GMP_CCS_infowindows_v2" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&v=weekly&solution_channel=GMP_CCS_geocodingservice_v2" defer></script>
 </body>
 
 </html>

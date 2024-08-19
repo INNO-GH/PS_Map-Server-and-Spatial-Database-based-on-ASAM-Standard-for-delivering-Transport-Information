@@ -24,7 +24,7 @@
         	        position: e.latLng,
         	        map: map,
         	    });
-        	    console.log("Clicked coordinates:", e.latLng.lat(), e.latLng.lng());
+        	    document.getElementsByName("coordinate")[0].value = e.latLng.lat() + ", " + e.latLng.lng();
       		});
     	}
     	window.initMap = initMap;

@@ -6,6 +6,7 @@ import lombok.Getter;
 @Setter
 @Getter
 public class UserVo {
+	String opendrive;
 	String coordinate;
 	String situation;
 }

@@ -74,12 +74,13 @@
 		</form>
 	</div>
     <div id="map">
-        <gmp-map center="-25.363, 131.044" zoom="4" map-id="DEMO_MAP_ID">
-            <gmp-advanced-marker position="-25.363, 131.044" title="Uluru" gmp-clickable></gmp-advanced-marker>
-        </gmp-map>
     </div>
     <div id="receive">
 		<form action="/map/receive" method="post" enctype="multipart/form-data">
+			<select name="opendrive">
+				<option value="no">No</option>
+				<option value="yes">Yes</option>
+		    </select>
 			<input type="text" name="coordinate" >  
 			<input type="text" name="situation" >  
 			<input type="submit" value="Receive" >

@@ -42,8 +42,8 @@ public class UserController {
 			}
 		}
 		if(!userVo.getCoordinate().isEmpty()) {
+			// 데이터베이스를 만든다음에 동적정보를 위치기반추출보내는 인터페이스코드를 짜야함
 			System.out.println(userVo.getCoordinate());
-			// 데이터베이스를 만든다음에 동적정보를 보내는 인터페이스코드를 짜야함
 		}
 		return "user";
 	}

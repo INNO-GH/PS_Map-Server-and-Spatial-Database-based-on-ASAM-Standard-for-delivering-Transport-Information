@@ -1,4 +1,5 @@
 package com.company.map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,9 @@ import java.io.IOException;
 
 @Controller
 public class CollectorController {
+	
+	@Autowired
+	CollectorService collectorService;
 	
 	@RequestMapping(value = "/collector", method = RequestMethod.GET)
 	public String collector() {
@@ -27,11 +31,11 @@ public class CollectorController {
 			catch (IOException e) {
 				e.printStackTrace();
 			}
-			// 데이터베이스를 만든다음에 정적정보를 업데이트하는 인터페이스코드를 짜야함
+			collectorService.sendstatic(destFile);
 		}
 		if(!collectorVo.getCoordinate().isEmpty() && !collectorVo.getSituation().isEmpty()) {
 			System.out.println(collectorVo.getCoordinate()+" / "+collectorVo.getSituation());
-			// 데이터베이스를 만든다음에 동적정보를 업데이트하는 인터페이스코드를 짜야함
+			collectorService.senddynamic();
 		}
 		return "collector";
 	}

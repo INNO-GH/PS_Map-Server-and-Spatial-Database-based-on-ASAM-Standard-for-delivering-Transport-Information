@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.company.map.vo.CollectorVo;
+
 @Service
 public class CollectorService {
 
@@ -20,8 +22,8 @@ public class CollectorService {
 		collectorDao.savestatic(opendrive);
 	}
 	
-	public void senddynamic() {
-		collectorDao.savedynamic();
+	public void senddynamic(String coordinate, String situation) {
+		collectorDao.savedynamic(coordinate, situation);
 	}
 	
 }

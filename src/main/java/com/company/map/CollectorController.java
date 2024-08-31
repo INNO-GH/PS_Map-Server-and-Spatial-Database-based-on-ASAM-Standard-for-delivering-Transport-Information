@@ -34,8 +34,7 @@ public class CollectorController {
 			collectorService.sendstatic(destFile);
 		}
 		if(!collectorVo.getCoordinate().isEmpty() && !collectorVo.getSituation().isEmpty()) {
-			System.out.println(collectorVo.getCoordinate()+" / "+collectorVo.getSituation());
-			collectorService.senddynamic();
+			collectorService.senddynamic(collectorVo.getCoordinate(), collectorVo.getSituation());
 		}
 		return "collector";
 	}

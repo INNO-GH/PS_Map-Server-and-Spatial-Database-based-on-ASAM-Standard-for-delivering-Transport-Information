@@ -37,27 +37,29 @@
             display: flex;
             flex-direction: column;
         }
-        #user {
-        	height: 7.5%;
+        #receive {
+        	height: 50%;
         	display: flex;
             justify-content: center;
             align-items: center;
+            background-color: skyblue;
         }
-        #collector {
-        	height: 7.5%;
-        	display: flex;
-            justify-content: center;
-            align-items: center;	
-        }
-        #map {
-            height: 70%;
+        #receive form {
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 20px;
+            width: 100%;
         }
-        #receive {
-        	height: 15%;
-        	display: flex;
+        #receive textarea {
+            width: 30%;
+            height: 400px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #map {
+            height: 50%;
+            display: flex;
             justify-content: center;
             align-items: center;
         }
@@ -65,27 +67,19 @@
 </head>
 
 <body>
-	<div id="user">
-		<h3>User</h3>
-	</div>
-	<div id="collector">
-		<form action="/map/collector">  
-			<input type="submit" value="Collector" >
-		</form>
-	</div>
-    <div id="map">
-    </div>
-    <div id="receive">
+	<div id="receive">
 		<form action="/map/receive" method="post" enctype="multipart/form-data">
 			<select name="opendrive">
 				<option value="no">No</option>
 				<option value="yes">Yes</option>
 		    </select>
-			<input type="text" name="coordinate" >  
-			<input type="text" name="situation" >  
+		    <textarea name="coordinate" placeholder="Coordinate"></textarea>
+		    <textarea name="situation" placeholder="Situation"></textarea>
 			<input type="submit" value="Receive" >
 		</form>
 	</div>
+    <div id="map">
+    </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&v=weekly&solution_channel=GMP_CCS_geocodingservice_v2" defer></script>
 </body>
 

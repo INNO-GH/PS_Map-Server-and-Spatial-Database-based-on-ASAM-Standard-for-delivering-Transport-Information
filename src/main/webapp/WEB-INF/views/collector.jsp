@@ -37,27 +37,29 @@
             display: flex;
             flex-direction: column;
         }
-        #collector {
-        	height: 7.5%;
+        #send {
+        	height: 50%;
         	display: flex;
             justify-content: center;
             align-items: center;
+            background-color: skyblue;
         }
-        #user {
-        	height: 7.5%;
-        	display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #map {
-            height: 70%;
+        #send form {
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 20px;
+            width: 100%;
         }
-        #send {
-        	height: 15%;
-        	display: flex;
+        #send textarea {
+            width: 30%;
+            height: 400px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #map {
+            height: 50%;
+            display: flex;
             justify-content: center;
             align-items: center;
         }
@@ -65,24 +67,16 @@
 </head>
 
 <body>
-	<div id="collector">
-		<h3>Collector</h3>
-	</div>
-	<div id="user">
-		<form action="/map/user">  
-			<input type="submit" value="User" >
-		</form>
-	</div>
-    <div id="map">
-    </div>
     <div id="send">
 		<form action="/map/send" method="post" enctype="multipart/form-data">
 			<input type="file" name="opendrive" accept=".xodr" >
-			<input type="text" name="coordinate" >  
-			<input type="text" name="situation" >
+			<textarea name="coordinate" placeholder="Coordinate"></textarea>  
+			<textarea name="situation" placeholder="Situation"></textarea>
 			<input type="submit" value="Send" >
 		</form>
 	</div>
+	<div id="map">
+    </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIFlQg-guItGQsdwDFu-l3M-ZeCujCM0Y&callback=initMap&v=weekly&solution_channel=GMP_CCS_geocodingservice_v2" defer></script>
 </body>
 

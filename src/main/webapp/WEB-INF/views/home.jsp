@@ -19,12 +19,14 @@
         	display: flex;
             justify-content: center;
             align-items: center;
+            background-color: skyblue;
         }
         #user {
         	height: 50%;
         	display: flex;
             justify-content: center;
-            align-items: center;	
+            align-items: center;
+            background-color: lightgreen;	
         }
     </style>
 </head>

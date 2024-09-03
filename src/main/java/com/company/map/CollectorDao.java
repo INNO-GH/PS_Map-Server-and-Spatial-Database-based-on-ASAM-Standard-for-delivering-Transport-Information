@@ -232,12 +232,16 @@ public class CollectorDao {
                     		line_dif = point_dif * Math.sin(angle_dif);
                     		for (int j = 0; j < ldwt.size(); j++) {
                     			if(ldwt.get(j)[0] > 0) {
-                    				if(ldwt.get(j)[1]>line_dif && line_dif>ldwt.get(j-1)[1]) System.out.println(road_id + " : " + (int)ldwt.get(j)[0]);
-                    				if(ldwt.get(j)[1]>line_dif && line_dif>ldwt.get(j-1)[1]) System.out.println(x_dif + "/" + y_dif + "/" + line_dif + "/" + angle_dif + "/" + sh);
+                    				if(ldwt.get(j)[1]>line_dif && line_dif>ldwt.get(j-1)[1]) {
+                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    	                jdbcTemplate.execute(sql); 
+                    				}
                     			}
                     			if(ldwt.get(j)[0] < 0) {
-                    				if(ldwt.get(j)[1]<line_dif && line_dif<ldwt.get(j+1)[1]) System.out.println(road_id + " : " + (int)ldwt.get(j)[0]);
-                    				if(ldwt.get(j)[1]<line_dif && line_dif<ldwt.get(j+1)[1]) System.out.println(x_dif + "/" + y_dif + "/" + line_dif + "/" + angle_dif + "/" + sh);
+                    				if(ldwt.get(j)[1]<line_dif && line_dif<ldwt.get(j+1)[1]) {
+                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    	                jdbcTemplate.execute(sql); 
+                    				}
                     			}
                     		}
                 		}
@@ -245,7 +249,70 @@ public class CollectorDao {
                 	
                 	// 지오메트리 아크경우 포함확인
                 	if(cur != 0.0) {
-                		//~~~~~//
+                		double center_a = 0.0;
+                		double center_x = 0.0;
+                		double center_y = 0.0;
+                		double arc_r = Math.abs(1/cur);
+                		double arc_sa = 0.0;
+                		double arc_ea = 0.0;
+                		if( cur > 0 ) center_a = sh + Math.PI/2;
+                		if( cur < 0 ) center_a = sh - Math.PI/2;
+                		if( center_a > 2*Math.PI ) center_a = center_a - 2*Math.PI;
+                		if( center_a < 0 ) center_a = center_a + 2*Math.PI;
+                		center_x = sx + arc_r*Math.cos(center_a); 
+                		center_y = sy + arc_r*Math.sin(center_a);
+                		if( cur > 0 ) {
+                			if( (sx-center_x)>0 && (sy-center_y)>0 ) arc_sa = Math.atan((sy-center_y)/(sx-center_x));
+                    		if( (sx-center_x)<0 && (sy-center_y)>0 ) arc_sa = Math.PI + Math.atan((sy-center_y)/(sx-center_x));
+                    		if( (sx-center_x)<0 && (sy-center_y)<0 ) arc_sa = Math.PI + Math.atan((sy-center_y)/(sx-center_x));
+                    		if( (sx-center_x)>0 && (sy-center_y)<0 ) arc_sa = 2*Math.PI + Math.atan((sy-center_y)/(sx-center_x));
+                    		arc_ea = arc_sa + len/arc_r;
+                    		if( arc_ea > 2*Math.PI ) arc_ea = arc_ea - 2*Math.PI;
+                		}
+                		if( cur < 0 ) {
+                			if( (sx-center_x)>0 && (sy-center_y)>0 ) arc_ea = Math.atan((sy-center_y)/(sx-center_x));
+                    		if( (sx-center_x)<0 && (sy-center_y)>0 ) arc_ea = Math.PI + Math.atan((sy-center_y)/(sx-center_x));
+                    		if( (sx-center_x)<0 && (sy-center_y)<0 ) arc_ea = Math.PI + Math.atan((sy-center_y)/(sx-center_x));
+                    		if( (sx-center_x)>0 && (sy-center_y)<0 ) arc_ea = 2*Math.PI + Math.atan((sy-center_y)/(sx-center_x));
+                    		arc_sa = arc_ea - len/arc_r;
+                    		if( arc_sa < 0 ) arc_sa = arc_sa + 2*Math.PI;
+                		}
+                		double x_dif = x - center_x;
+                		double y_dif = y - center_y;
+                		double point_dif = Math.sqrt(Math.pow(x_dif, 2) + Math.pow(y_dif, 2));
+                		double angle_dif = 0.0;
+                		if( x_dif>0 && y_dif>0 ) angle_dif = (Math.atan(y_dif/x_dif));
+                		if( x_dif<0 && y_dif>0 ) angle_dif = (Math.PI + Math.atan(y_dif/x_dif));
+                		if( x_dif<0 && y_dif<0 ) angle_dif = (Math.PI + Math.atan(y_dif/x_dif));
+                		if( x_dif>0 && y_dif<0 ) angle_dif = (2*Math.PI + Math.atan(y_dif/x_dif));
+                		if( (arc_sa<arc_ea && arc_sa<angle_dif && angle_dif<arc_ea) || (arc_sa>arc_ea && (arc_sa<angle_dif || angle_dif<arc_ea)) ) {
+                			for (int j = 0; j < ldwt.size(); j++) {
+                				if(ldwt.get(j)[0]>0 && cur>0) {
+                					if(arc_r-ldwt.get(j)[1]<point_dif && point_dif<arc_r-ldwt.get(j-1)[1]) {
+                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    	                jdbcTemplate.execute(sql); 
+                    				}
+                				}
+                				if(ldwt.get(j)[0]<0 && cur>0) {
+                    				if(arc_r-ldwt.get(j)[1]>point_dif && point_dif>arc_r-ldwt.get(j+1)[1]) {
+                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    	                jdbcTemplate.execute(sql); 
+                    				}
+                    			}
+                    			if(ldwt.get(j)[0]>0 && cur<0) {
+                    				if(arc_r+ldwt.get(j)[1]>point_dif && point_dif>arc_r+ldwt.get(j-1)[1]) {
+                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    	                jdbcTemplate.execute(sql); 
+                    				}
+                    			}
+                    			if(ldwt.get(j)[0]<0 && cur<0) {
+                    				if(arc_r+ldwt.get(j)[1]<point_dif && point_dif<arc_r+ldwt.get(j+1)[1]) {
+                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    	                jdbcTemplate.execute(sql); 
+                    				}
+                    			}
+                    		}
+                		}
                 	}
                 	
                 }

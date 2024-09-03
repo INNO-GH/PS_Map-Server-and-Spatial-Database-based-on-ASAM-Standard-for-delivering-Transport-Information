@@ -18,9 +18,13 @@ public class CollectorService {
 	@Autowired
 	CollectorDao collectorDao;
 	
+	//----------//
+	
 	public void sendstatic(File opendrive) {
 		collectorDao.savestatic(opendrive);
 	}
+	
+	//----------//
 	
 	public void senddynamic(String coordinate, String situation) {
 		collectorDao.savedynamic(coordinate, situation);

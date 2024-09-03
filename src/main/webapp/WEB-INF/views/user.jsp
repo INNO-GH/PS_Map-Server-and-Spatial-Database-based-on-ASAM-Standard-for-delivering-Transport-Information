@@ -74,7 +74,7 @@
 				<option value="yes">Yes</option>
 		    </select>
 		    <textarea name="coordinate" placeholder="Coordinate"></textarea>
-		    <textarea name="situation" placeholder="Situation"></textarea>
+		    <textarea name="situation" placeholder="Situation">${situation}</textarea>
 			<input type="submit" value="Receive" >
 		</form>
 	</div>

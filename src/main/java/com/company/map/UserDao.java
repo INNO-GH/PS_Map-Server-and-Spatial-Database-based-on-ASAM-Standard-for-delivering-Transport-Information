@@ -34,7 +34,7 @@ public class UserDao {
 		double lon = Double.parseDouble(latlon[1].trim());
 		double y = 0;
 		double x = 0;
-		int id = 0;
+		String name = "";
 			    
 	    // header
 		String sql = "SELECT * FROM header";
@@ -49,13 +49,13 @@ public class UserDao {
 		    y = (lat-center_lat)*(111319.49); 
 		    x = (lon-center_lon)*(111319.49)*(Math.cos(Math.toRadians(center_lat)));
 		    if( (north>y) && (y>south) && (west<x) && (x<east) ) {
-		    	id = (Integer)row.get("id");
+		    	name = (String)row.get("name");
 		        break;
 		    }
 		}
 		
 		// return
-		return String.valueOf(id);
+		return name;
 				
 	}
 	
@@ -70,7 +70,7 @@ public class UserDao {
 	    double lon = Double.parseDouble(latlon[1].trim());
 	    double y = 0;
 	    double x = 0;
-	    int id = 0;
+	    String name = "";
 	    
 	    // header
         String sql = "SELECT * FROM header";
@@ -85,13 +85,13 @@ public class UserDao {
         	y = (lat-center_lat)*(111319.49); 
         	x = (lon-center_lon)*(111319.49)*(Math.cos(Math.toRadians(center_lat)));
         	if( (north>y) && (y>south) && (west<x) && (x<east) ) {
-        		id = (Integer)row.get("id");
+        		name = (String)row.get("name");
         		break;
         	}
         }
         
         // n_road_lane
-        sql = "SELECT * FROM " + id + "_road_lane";
+        sql = "SELECT * FROM " + name + "_road_lane";
         rows = jdbcTemplate.queryForList(sql);
         for(Map<String, Object> row : rows) {
         	

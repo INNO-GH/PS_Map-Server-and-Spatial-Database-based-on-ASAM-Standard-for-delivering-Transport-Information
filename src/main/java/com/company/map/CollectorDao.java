@@ -48,8 +48,8 @@ public class CollectorDao {
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             
             // header
-            String h_id_temp = opendrive.getName();
-            String h_id = h_id_temp.substring(0, h_id_temp.lastIndexOf('.'));
+            String h_name_temp = opendrive.getName();
+            String h_name = h_name_temp.substring(0, h_name_temp.lastIndexOf('.'));
             Node geoReference = (Node) xPath.evaluate("/OpenDRIVE/header/geoReference", doc, XPathConstants.NODE);
             String center_lat = geoReference.getAttributes().getNamedItem("lat_0").getNodeValue();
             String center_lon = geoReference.getAttributes().getNamedItem("lon_0").getNodeValue();
@@ -58,15 +58,15 @@ public class CollectorDao {
             String west = header.getAttributes().getNamedItem("west").getNodeValue();
             String north = header.getAttributes().getNamedItem("north").getNodeValue();
             String south = header.getAttributes().getNamedItem("south").getNodeValue();
-            String h_sql = "DELETE FROM header WHERE id=" + h_id;
+            String h_sql = "DELETE FROM header WHERE name='" + h_name + "'";
             jdbcTemplate.execute(h_sql);
-            h_sql = "INSERT INTO header (id, center_lat, center_lon, east, west, north, south) " + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            jdbcTemplate.update(h_sql, h_id, center_lat, center_lon, east, west, north, south);
+            h_sql = "INSERT INTO header (name, center_lat, center_lon, east, west, north, south) " + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            jdbcTemplate.update(h_sql, h_name, center_lat, center_lon, east, west, north, south);
             
             // n_road_lane
-            String r_sql = "DROP TABLE IF EXISTS " + h_id + "_road_lane";
+            String r_sql = "DROP TABLE IF EXISTS " + h_name + "_road_lane";
             jdbcTemplate.execute(r_sql);
-            r_sql = "CREATE TABLE " + h_id + "_road_lane " + "(" + "id INT PRIMARY KEY," + "link LONGTEXT," + "planview LONGTEXT," + "elevation LONGTEXT," + "lanes LONGTEXT," + "situation LONGTEXT" + ");";
+            r_sql = "CREATE TABLE " + h_name + "_road_lane " + "(" + "id INT PRIMARY KEY," + "link LONGTEXT," + "planview LONGTEXT," + "elevation LONGTEXT," + "lanes LONGTEXT," + "situation LONGTEXT" + ");";
             jdbcTemplate.execute(r_sql);
             NodeList roads = (NodeList) xPath.evaluate("/OpenDRIVE/road", doc, XPathConstants.NODESET);
             for (int i = 0; i < roads.getLength(); i++) {
@@ -88,14 +88,14 @@ public class CollectorDao {
                 transformer.transform(new DOMSource(lanes_node), new StreamResult(writer));
                 String lanes = writer.toString();
                 writer.getBuffer().setLength(0);
-                r_sql = "INSERT INTO " + h_id + "_road_lane " + "(id, link, planview, elevation, lanes) " + "VALUES (?, ?, ?, ?, ?)";
+                r_sql = "INSERT INTO " + h_name + "_road_lane " + "(id, link, planview, elevation, lanes) " + "VALUES (?, ?, ?, ?, ?)";
                 jdbcTemplate.update(r_sql, r_id, link, planview, elevation, lanes);
             }
             
             // n_junction_connection
-            String j_sql = "DROP TABLE IF EXISTS " + h_id + "_junction_connection";
+            String j_sql = "DROP TABLE IF EXISTS " + h_name + "_junction_connection";
             jdbcTemplate.execute(j_sql);
-            j_sql = "CREATE TABLE " + h_id + "_junction_connection " + "(" + "id INT PRIMARY KEY," + "connections LONGTEXT" + ");";
+            j_sql = "CREATE TABLE " + h_name + "_junction_connection " + "(" + "id INT PRIMARY KEY," + "connections LONGTEXT" + ");";
             jdbcTemplate.execute(j_sql);
             NodeList junctions = (NodeList) xPath.evaluate("/OpenDRIVE/junction", doc, XPathConstants.NODESET);
             for (int i = 0; i < junctions.getLength(); i++) {
@@ -104,7 +104,7 @@ public class CollectorDao {
                 transformer.transform(new DOMSource(junction), new StreamResult(writer));
                 String connections = writer.toString();
                 writer.getBuffer().setLength(0);
-                j_sql = "INSERT INTO " + h_id + "_junction_connection " + "(id, connections) " + "VALUES (?, ?)";
+                j_sql = "INSERT INTO " + h_name + "_junction_connection " + "(id, connections) " + "VALUES (?, ?)";
                 jdbcTemplate.update(j_sql, j_id, connections);
             }
 		} 
@@ -123,7 +123,7 @@ public class CollectorDao {
 	    double lon = Double.parseDouble(latlon[1].trim());
 	    double y = 0;
 	    double x = 0;
-	    int id = 0;
+	    String name = "";
 	    
 	    // header
         String sql = "SELECT * FROM header";
@@ -138,13 +138,13 @@ public class CollectorDao {
         	y = (lat-center_lat)*(111319.49); 
         	x = (lon-center_lon)*(111319.49)*(Math.cos(Math.toRadians(center_lat)));
         	if( (north>y) && (y>south) && (west<x) && (x<east) ) {
-        		id = (Integer)row.get("id");
+        		name = (String)row.get("name");
         		break;
         	}
         }
         
         // n_road_lane
-        sql = "SELECT * FROM " + id + "_road_lane";
+        sql = "SELECT * FROM " + name + "_road_lane";
         rows = jdbcTemplate.queryForList(sql);
         for(Map<String, Object> row : rows) {
         	
@@ -233,13 +233,13 @@ public class CollectorDao {
                     		for (int j = 0; j < ldwt.size(); j++) {
                     			if(ldwt.get(j)[0] > 0) {
                     				if(ldwt.get(j)[1]>line_dif && line_dif>ldwt.get(j-1)[1]) {
-                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    					sql = "UPDATE " + name + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
                     	                jdbcTemplate.execute(sql); 
                     				}
                     			}
                     			if(ldwt.get(j)[0] < 0) {
                     				if(ldwt.get(j)[1]<line_dif && line_dif<ldwt.get(j+1)[1]) {
-                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    					sql = "UPDATE " + name + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
                     	                jdbcTemplate.execute(sql); 
                     				}
                     			}
@@ -289,25 +289,25 @@ public class CollectorDao {
                 			for (int j = 0; j < ldwt.size(); j++) {
                 				if(ldwt.get(j)[0]>0 && cur>0) {
                 					if(arc_r-ldwt.get(j)[1]<point_dif && point_dif<arc_r-ldwt.get(j-1)[1]) {
-                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    					sql = "UPDATE " + name + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
                     	                jdbcTemplate.execute(sql); 
                     				}
                 				}
                 				if(ldwt.get(j)[0]<0 && cur>0) {
                     				if(arc_r-ldwt.get(j)[1]>point_dif && point_dif>arc_r-ldwt.get(j+1)[1]) {
-                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    					sql = "UPDATE " + name + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
                     	                jdbcTemplate.execute(sql); 
                     				}
                     			}
                     			if(ldwt.get(j)[0]>0 && cur<0) {
                     				if(arc_r+ldwt.get(j)[1]>point_dif && point_dif>arc_r+ldwt.get(j-1)[1]) {
-                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    					sql = "UPDATE " + name + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
                     	                jdbcTemplate.execute(sql); 
                     				}
                     			}
                     			if(ldwt.get(j)[0]<0 && cur<0) {
                     				if(arc_r+ldwt.get(j)[1]<point_dif && point_dif<arc_r+ldwt.get(j+1)[1]) {
-                    					sql = "UPDATE " + id + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
+                    					sql = "UPDATE " + name + "_road_lane SET situation = '" + situation + "' WHERE id = " + road_id;
                     	                jdbcTemplate.execute(sql); 
                     				}
                     			}

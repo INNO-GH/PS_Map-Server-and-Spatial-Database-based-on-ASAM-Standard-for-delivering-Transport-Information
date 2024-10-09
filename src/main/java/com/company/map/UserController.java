@@ -26,7 +26,7 @@ public class UserController {
 	public String receive(UserVo userVo, HttpServletResponse response, Model model) {
 		if(userVo.getOpendrive().equals("yes") && !userVo.getCoordinate().isEmpty()) {
 			// 데이터베이스 헤더테이블에서 위치맞는 오픈드라이브 찾기
-			String file_name = "C:/Users/INNO/Git/PS_Map-Server-and-Spatial-Database-based-on-ASAM-Standard-for-delivering-Transport-Information/src/main/webapp/resources/"+userService.receivestatic(userVo.getCoordinate())+".xodr";
+			String file_name = "/home/ubuntu/PS_Map-Server-and-Spatial-Database-based-on-ASAM-Standard-for-delivering-Transport-Information/src/main/webapp/resources/"+userService.receivestatic(userVo.getCoordinate())+".xodr";
 			// 파일에서 오픈드라이브 보내기
 			File file = new File(file_name);					
 			if (file.exists()) {

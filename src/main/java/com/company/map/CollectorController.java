@@ -23,7 +23,7 @@ public class CollectorController {
 	public String send(CollectorVo collectorVo) {
 		if(!collectorVo.getOpendrive().isEmpty()) {
 			// 오픈드라이브를 파일로 저장
-			String folderPath = "C:/Users/INNO/Git/PS_Map-Server-and-Spatial-Database-based-on-ASAM-Standard-for-delivering-Transport-Information/src/main/webapp/resources/";
+			String folderPath = "/home/ubuntu/PS_Map-Server-and-Spatial-Database-based-on-ASAM-Standard-for-delivering-Transport-Information/src/main/webapp/resources/";
 			String fileName = collectorVo.getOpendrive().getOriginalFilename();
 			File destFile = new File(folderPath + fileName);
 			try {

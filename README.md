@@ -1,5 +1,5 @@
 ## Access 
-- AWS에 배포된 서버의 URL로 접근
+- AWS에 배포된 프로그램의 URL로 접근
 
 ## Collector 
 - OpenDRIVE 파일을 서버 및 데이터베이스에 업로드

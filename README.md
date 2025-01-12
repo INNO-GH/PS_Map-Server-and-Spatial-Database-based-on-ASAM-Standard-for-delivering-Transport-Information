@@ -1,5 +1,5 @@
 ## Access 
-- http://43.203.236.58:8080/map/
+- AWS에 배포된 서버의 URL로 접근
 
 ## Collector 
 - OpenDRIVE 파일을 서버 및 데이터베이스에 업로드
